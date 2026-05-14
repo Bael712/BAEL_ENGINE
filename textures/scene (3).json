@@ -1,0 +1,27 @@
+[
+  {
+    "id": "obj_0",
+    "name": "box_0",
+    "type": "box",
+    "position": {
+      "x": 0,
+      "y": 0.29999999999999993,
+      "z": 0
+    },
+    "rotation": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "scale": {
+      "x": 1,
+      "y": 1,
+      "z": 1
+    },
+    "color": "#084949",
+    "opacity": 0.75,
+    "material": "metal",
+    "collider": true,
+    "physics": true
+  }
+]

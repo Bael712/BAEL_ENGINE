@@ -4,9 +4,7 @@
 <head>
 
 <meta charset="UTF-8">
-
-<meta name="viewport"
-content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>BAEL ENGINE</title>
 
@@ -20,58 +18,158 @@ body{
 }
 
 /* =========================
+   MENU BUTTON
+========================= */
+
+#menuButton{
+
+    position:fixed;
+    top:15px;
+    left:15px;
+
+    width:45px;
+    height:45px;
+
+    border-radius:50%;
+
+    background:rgba(255,255,255,0.15);
+    border:2px solid rgba(255,255,255,0.3);
+
+    color:white;
+    font-size:20px;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    cursor:pointer;
+
+    z-index:200;
+}
+
+/* =========================
    HUD
 ========================= */
 
 #hud{
 
     position:fixed;
+    top:15px;
+    left:50%;
+    transform:translateX(-50%);
 
-    left:20px;
-    top:20px;
+    display:flex;
+    flex-direction:column;
+    gap:8px;
 
     z-index:100;
-
-    color:white;
-
-    font-family:sans-serif;
 }
 
-#levelText{
+/* =========================
+   BAR
+========================= */
 
-    margin-bottom:10px;
+.barWrap{
 
-    font-size:22px;
+    width:280px;
+    height:18px;
 
-    font-weight:bold;
+    background:rgba(0,0,0,0.4);
+
+    border:2px solid rgba(255,255,255,0.2);
+
+    border-radius:999px;
+
+    overflow:hidden;
+
+    position:relative;
 }
 
-.barBase{
-
-    width:220px;
-    height:22px;
-
-    background:#222;
-
-    border:2px solid #555;
-
-    margin-bottom:10px;
-}
+/* HP */
 
 #hpBar{
 
     width:100%;
     height:100%;
 
-    background:#cc3333;
+    background:#2ecc71;
 }
+
+/* MP */
 
 #mpBar{
 
     width:100%;
     height:100%;
 
-    background:#3366cc;
+    background:#f39c12;
+}
+
+/* MP MAX TEXT */
+
+#mpMaxText{
+
+    position:absolute;
+
+    right:6px;
+    top:50%;
+    transform:translateY(-50%);
+
+    font-size:12px;
+
+    color:#9b59b6;
+
+    font-weight:bold;
+
+    pointer-events:none;
+}
+
+/* =========================
+   MENU PANEL
+========================= */
+
+#menuPanel{
+
+    position:fixed;
+
+    top:70px;
+    left:15px;
+
+    width:180px;
+
+    background:rgba(0,0,0,0.7);
+
+    border:2px solid rgba(255,255,255,0.2);
+
+    border-radius:10px;
+
+    padding:10px;
+
+    display:none;
+
+    flex-direction:column;
+
+    gap:10px;
+
+    z-index:300;
+}
+
+.menuItem{
+
+    color:white;
+
+    padding:8px;
+
+    border-radius:6px;
+
+    background:rgba(255,255,255,0.05);
+
+    cursor:pointer;
+}
+
+.menuItem:hover{
+
+    background:rgba(255,255,255,0.15);
 }
 
 </style>
@@ -81,36 +179,41 @@ body{
 <body>
 
 <!-- =========================
-     HUD
+   MENU BUTTON
+========================= -->
+
+<div id="menuButton">☰</div>
+
+<!-- =========================
+   HUD
 ========================= -->
 
 <div id="hud">
 
-    <div id="levelText">
-        LV 1
-    </div>
-
-    <div class="barBase">
-
+    <div class="barWrap">
         <div id="hpBar"></div>
-
     </div>
 
-    <div class="barBase">
-
+    <div class="barWrap">
         <div id="mpBar"></div>
-
+        <div id="mpMaxText"></div>
     </div>
 
 </div>
 
+<!-- =========================
+   MENU PANEL
+========================= -->
 
+<div id="menuPanel">
+
+    <div class="menuItem">Resume</div>
+    <div class="menuItem">Save</div>
+    <div class="menuItem">Settings</div>
+
+</div>
 
 <script type="module">
-
-/* =========================
-   RENDERER
-========================= */
 
 import {
 
@@ -120,19 +223,11 @@ import {
 
 } from "./engine/renderer.js";
 
-/* =========================
-   MAP
-========================= */
-
 import {
 
     loadMap
 
 } from "./engine/mapLoader.js";
-
-/* =========================
-   PLAYER
-========================= */
 
 import {
 
@@ -141,19 +236,11 @@ import {
 
 } from "./game/player.js";
 
-/* =========================
-   CAMERA
-========================= */
-
 import {
 
     updateCamera
 
 } from "./engine/camera.js";
-
-/* =========================
-   SAVE SYSTEM
-========================= */
 
 import {
 
@@ -163,14 +250,40 @@ import {
 } from "./engine/saveSystem.js";
 
 /* =========================
-   HUD
+   MENU TOGGLE
 ========================= */
 
-import {
+const menuButton =
+    document.getElementById("menuButton");
 
-    updateHUD
+const menuPanel =
+    document.getElementById("menuPanel");
 
-} from "./ui/hud.js";
+let menuOpen = false;
+
+menuButton.addEventListener("click", () => {
+
+    menuOpen = !menuOpen;
+
+    menuPanel.style.display =
+        menuOpen ? "flex" : "none";
+
+});
+
+/* =========================
+   MP MAX DISPLAY TEST
+========================= */
+
+const mpMaxText =
+    document.getElementById("mpMaxText");
+
+/* テスト用：未設定 */
+const playerMPMax = null;
+
+mpMaxText.textContent =
+    (playerMPMax === null || playerMPMax === undefined)
+        ? "×"
+        : playerMPMax;
 
 /* =========================
    LOAD MAP
@@ -184,14 +297,10 @@ await loadMap(
 );
 
 /* =========================
-   ADD PLAYER
+   PLAYER
 ========================= */
 
 scene.add(player);
-
-/* =========================
-   LOAD SAVE
-========================= */
 
 loadGame(player);
 
@@ -199,19 +308,15 @@ loadGame(player);
    SAVE KEY
 ========================= */
 
-window.addEventListener(
+window.addEventListener("keydown", (e) => {
 
-    "keydown",
+    if(e.key === "p"){
 
-    (e)=>{
-
-        if(e.key === "p"){
-
-            saveGame(player);
-        }
+        saveGame(player);
 
     }
-);
+
+});
 
 /* =========================
    LOOP
@@ -225,21 +330,14 @@ function animate(){
 
     updateCamera(player);
 
-    updateHUD();
+    renderer.render(scene, camera);
 
-    renderer.render(
-
-        scene,
-        camera
-
-    );
 }
 
 animate();
 
 </script>
 
-
-
 </body>
+
 </html>
