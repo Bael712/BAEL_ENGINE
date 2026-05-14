@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
+
+<title>BAEL ENGINE</title>
+
+<style>
+
+body{
+
+    margin:0;
+    overflow:hidden;
+    background:black;
+}
+
+/* =========================
+   HUD
+========================= */
+
+#hud{
+
+    position:fixed;
+
+    left:20px;
+    top:20px;
+
+    z-index:100;
+
+    color:white;
+
+    font-family:sans-serif;
+}
+
+#levelText{
+
+    margin-bottom:10px;
+
+    font-size:22px;
+
+    font-weight:bold;
+}
+
+.barBase{
+
+    width:220px;
+    height:22px;
+
+    background:#222;
+
+    border:2px solid #555;
+
+    margin-bottom:10px;
+}
+
+#hpBar{
+
+    width:100%;
+    height:100%;
+
+    background:#cc3333;
+}
+
+#mpBar{
+
+    width:100%;
+    height:100%;
+
+    background:#3366cc;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<!-- =========================
+     HUD
+========================= -->
+
+<div id="hud">
+
+    <div id="levelText">
+        LV 1
+    </div>
+
+    <div class="barBase">
+
+        <div id="hpBar"></div>
+
+    </div>
+
+    <div class="barBase">
+
+        <div id="mpBar"></div>
+
+    </div>
+
+</div>
+
+
+
+<script type="module">
+
+/* =========================
+   RENDERER
+========================= */
+
+import {
+
+    scene,
+    camera,
+    renderer
+
+} from "./engine/renderer.js";
+
+/* =========================
+   MAP
+========================= */
+
+import {
+
+    loadMap
+
+} from "./engine/mapLoader.js";
+
+/* =========================
+   PLAYER
+========================= */
+
+import {
+
+    player,
+    updatePlayer
+
+} from "./game/player.js";
+
+/* =========================
+   CAMERA
+========================= */
+
+import {
+
+    updateCamera
+
+} from "./engine/camera.js";
+
+/* =========================
+   SAVE SYSTEM
+========================= */
+
+import {
+
+    saveGame,
+    loadGame
+
+} from "./engine/saveSystem.js";
+
+/* =========================
+   HUD
+========================= */
+
+import {
+
+    updateHUD
+
+} from "./ui/hud.js";
+
+/* =========================
+   LOAD MAP
+========================= */
+
+await loadMap(
+
+    scene,
+    "./maps/map.json"
+
+);
+
+/* =========================
+   ADD PLAYER
+========================= */
+
+scene.add(player);
+
+/* =========================
+   LOAD SAVE
+========================= */
+
+loadGame(player);
+
+/* =========================
+   SAVE KEY
+========================= */
+
+window.addEventListener(
+
+    "keydown",
+
+    (e)=>{
+
+        if(e.key === "p"){
+
+            saveGame(player);
+        }
+
+    }
+);
+
+/* =========================
+   LOOP
+========================= */
+
+function animate(){
+
+    requestAnimationFrame(animate);
+
+    updatePlayer();
+
+    updateCamera(player);
+
+    updateHUD();
+
+    renderer.render(
+
+        scene,
+        camera
+
+    );
+}
+
+animate();
+
+</script>
+
+
+
+</body>
+</html>
