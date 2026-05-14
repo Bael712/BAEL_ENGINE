@@ -1,27 +1,20 @@
-import {
-
-    playerStatus
-
-} from "../game/player.js";
+import { playerStatus } from "../game/player.js";
 
 /* =========================
    HUD ELEMENTS
 ========================= */
 
 const hpBar =
-    document.getElementById(
-        "hpBar"
-    );
+    document.getElementById("hpBar");
 
 const mpBar =
-    document.getElementById(
-        "mpBar"
-    );
+    document.getElementById("mpBar");
+
+const mpMaxText =
+    document.getElementById("mpMaxText");
 
 const levelText =
-    document.getElementById(
-        "levelText"
-    );
+    document.getElementById("levelText");
 
 /* =========================
    UPDATE HUD
@@ -29,30 +22,51 @@ const levelText =
 
 export function updateHUD(){
 
-    /* HP */
+    /* =========================
+       HP
+    ========================= */
 
     const hpPercent =
 
-        playerStatus.hp /
-        playerStatus.maxHp * 100;
+        (playerStatus.maxHp === 0)
+            ? 0
+            : (playerStatus.hp / playerStatus.maxHp) * 100;
 
     hpBar.style.width =
         hpPercent + "%";
 
-    /* MP */
+    /* =========================
+       MP
+    ========================= */
 
     const mpPercent =
 
-        playerStatus.mp /
-        playerStatus.maxMp * 100;
+        (playerStatus.maxMp == null || playerStatus.maxMp === 0)
+            ? 0
+            : (playerStatus.mp / playerStatus.maxMp) * 100;
 
     mpBar.style.width =
         mpPercent + "%";
 
-    /* LEVEL */
+    /* MP最大値表示（未設定対応） */
 
-    levelText.textContent =
+    if(playerStatus.maxMp == null){
 
-        "LV " +
-        playerStatus.level;
+        mpMaxText.textContent = "×";
+
+    }else{
+
+        mpMaxText.textContent = playerStatus.maxMp;
+    }
+
+    /* =========================
+       LEVEL
+    ========================= */
+
+    if(levelText){
+
+        levelText.textContent =
+            "LV " + (playerStatus.level ?? 1);
+    }
+
 }

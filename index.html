@@ -131,11 +131,10 @@ body{
 #menuPanel{
 
     position:fixed;
-
     top:70px;
     left:15px;
 
-    width:180px;
+    width:200px;
 
     background:rgba(0,0,0,0.7);
 
@@ -148,7 +147,6 @@ body{
     display:none;
 
     flex-direction:column;
-
     gap:10px;
 
     z-index:300;
@@ -158,7 +156,7 @@ body{
 
     color:white;
 
-    padding:8px;
+    padding:10px;
 
     border-radius:6px;
 
@@ -249,41 +247,23 @@ import {
 
 } from "./engine/saveSystem.js";
 
-/* =========================
-   MENU TOGGLE
-========================= */
+import {
 
-const menuButton =
-    document.getElementById("menuButton");
+    initMenu
 
-const menuPanel =
-    document.getElementById("menuPanel");
+} from "./ui/menu.js";
 
-let menuOpen = false;
+import {
 
-menuButton.addEventListener("click", () => {
+    updateHUD
 
-    menuOpen = !menuOpen;
-
-    menuPanel.style.display =
-        menuOpen ? "flex" : "none";
-
-});
+} from "./ui/hud.js";
 
 /* =========================
-   MP MAX DISPLAY TEST
+   INIT MENU
 ========================= */
 
-const mpMaxText =
-    document.getElementById("mpMaxText");
-
-/* テスト用：未設定 */
-const playerMPMax = null;
-
-mpMaxText.textContent =
-    (playerMPMax === null || playerMPMax === undefined)
-        ? "×"
-        : playerMPMax;
+initMenu();
 
 /* =========================
    LOAD MAP
@@ -329,6 +309,8 @@ function animate(){
     updatePlayer();
 
     updateCamera(player);
+
+    updateHUD();
 
     renderer.render(scene, camera);
 
